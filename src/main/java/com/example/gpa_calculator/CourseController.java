@@ -14,7 +14,7 @@ public class CourseController {
 
     public void initialize(){
         grade.setItems(FXCollections.observableArrayList(
-                "A+", "A", "A-", "B+", "B", "B-", "C+", "C", "C-", "D", "F"
+                "A+", "A", "A-", "B+", "B", "B-", "C+", "C",  "D", "F"
         ));
     }
 
@@ -34,5 +34,6 @@ public class CourseController {
     }
 
     public void showResult(ActionEvent actionEvent) {
+
     }
 }
