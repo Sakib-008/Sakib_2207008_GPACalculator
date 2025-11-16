@@ -1,14 +1,74 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="CONTROLLER_NAME"
-            prefHeight="400.0" prefWidth="600.0">
+<BorderPane xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.gpa_calculator.CourseController">
 
-</AnchorPane>
+    <top>
+        <Label styleClass="header" text="Enter Course Details">
+            <padding>
+                <Insets bottom="10" left="10" right="10" top="10" />
+            </padding>
+        </Label>
+    </top>
+
+    <center>
+        <GridPane hgap="10" vgap="10" BorderPane.alignment="CENTER">
+            <padding>
+                <Insets bottom="20" left="20" right="20" top="20" />
+            </padding>
+
+            <Label text="Course Name:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+            <TextField fx:id="courseName" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+
+            <Label text="Course Code:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+            <TextField fx:id="courseCode" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+            <Label text="Course Credit:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+            <TextField fx:id="courseCredit" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+
+            <Label text="Teacher 1:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+            <TextField fx:id="teacher1" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+
+            <Label text="Teacher 2:" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+            <TextField fx:id="teacher2" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+
+            <Label text="Grade:" GridPane.columnIndex="0" GridPane.rowIndex="5" />
+            <ComboBox fx:id="grade" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+         <columnConstraints>
+            <ColumnConstraints />
+            <ColumnConstraints />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+         </rowConstraints>
+
+        </GridPane>
+    </center>
+
+    <bottom>
+        <HBox alignment="CENTER" spacing="20">
+            <padding>
+                <Insets bottom="20" left="20" right="20" top="20" />
+            </padding>
+
+            <Button fx:id="addCouresBtn" onAction="#addCourse" text="Add Course" />
+            <Button fx:id="calculateBtn" disable="true" onAction="#showResult" text="Calculate GPA" />
+        </HBox>
+    </bottom>
+
+</BorderPane>
