@@ -32,9 +32,9 @@ public class ResultController {
         double totalPoints = 0;
         double totalCredits = 0;
         for(Course c : courses) {
-            double points = c.getCredit() * c.getGradePoint();
+            double points = c.credit() * c.getGradePoint();
             totalPoints += points;
-            totalCredits += c.getCredit();
+            totalCredits += c.credit();
         }
         totalCreditsLabel.setText(String.format("Total Credits: %.2f", totalCredits));
         totalPointsLabel.setText(String.format("Total Points: %.2f", totalPoints));
@@ -54,9 +54,9 @@ public class ResultController {
             double totalPoints = 0;
             double totalCredits = 0;
             for (Course c : courses) {
-                writer.write(String.format("Course: %s | Code: %s | Credit: %.2f | Grade: %s\n", c.getName(), c.getCode(), c.getCredit(), c.getGrade()));
-                totalPoints += c.getCredit() * c.getGradePoint();
-                totalCredits += c.getCredit();
+                writer.write(String.format("Course: %s | Code: %s | Credit: %.2f | Grade: %s\n", c.name(), c.code(), c.credit(), c.grade()));
+                totalPoints += c.credit() * c.getGradePoint();
+                totalCredits += c.credit();
             }
             double gpa = totalCredits == 0 ? 0 : totalPoints / totalCredits;
             writer.write(String.format("\nTotal Credits: %.2f\nTotal Points: %.2f\nWeighted GPA: %.2f\n", totalCredits, totalPoints, gpa));

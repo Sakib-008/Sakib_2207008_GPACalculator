@@ -113,15 +113,15 @@ public class CourseController {
             new Alert(Alert.AlertType.WARNING, "No course selected!").show();
             return;
         }
-        courseName.setText(selected.getName());
-        courseCode.setText(selected.getCode());
-        courseCredit.setText(String.valueOf(selected.getCredit()));
-        teacher1.setText(selected.getTeacher1());
-        teacher2.setText(selected.getTeacher2());
-        grade.setValue(selected.getGrade());
+        courseName.setText(selected.name());
+        courseCode.setText(selected.code());
+        courseCredit.setText(String.valueOf(selected.credit()));
+        teacher1.setText(selected.teacher1());
+        teacher2.setText(selected.teacher2());
+        grade.setValue(selected.grade());
 
         courseList.remove(selected);
-        totalCredits -= selected.getCredit();
+        totalCredits -= selected.credit();
         if (totalCredits < requiredCredits) calculateBtn.setDisable(true);
     }
 
@@ -132,7 +132,7 @@ public class CourseController {
             return;
         }
         courseList.remove(selected);
-        totalCredits -= selected.getCredit();
+        totalCredits -= selected.credit();
         if (totalCredits < requiredCredits) calculateBtn.setDisable(true);
     }
 
@@ -162,9 +162,9 @@ public class CourseController {
             double totalPoints = 0;
             double totalCreditsLocal = 0;
             for (Course c : courseList) {
-                writer.write(String.format("Course: %s | Code: %s | Credit: %.2f | Grade: %s\n", c.getName(), c.getCode(), c.getCredit(), c.getGrade()));
-                totalPoints += c.getCredit() * c.getGradePoint();
-                totalCreditsLocal += c.getCredit();
+                writer.write(String.format("Course: %s | Code: %s | Credit: %.2f | Grade: %s\n", c.name(), c.code(), c.credit(), c.grade()));
+                totalPoints += c.credit() * c.getGradePoint();
+                totalCreditsLocal += c.credit();
             }
             double gpa = totalCreditsLocal == 0 ? 0 : totalPoints / totalCreditsLocal;
             writer.write(String.format("\nTotal Credits: %.2f\nTotal Points: %.2f\nWeighted GPA: %.2f\n", totalCreditsLocal, totalPoints, gpa));
