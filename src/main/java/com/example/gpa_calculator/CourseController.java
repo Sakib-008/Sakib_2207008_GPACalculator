@@ -14,6 +14,8 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
+import java.io.IOException;
+
 public class CourseController {
     public TextField courseName, courseCode, courseCredit, teacher1, teacher2;
     public ComboBox<String> grade;
@@ -63,7 +65,7 @@ public class CourseController {
         }
     }
 
-    public void showResult(ActionEvent event) {
+    public void showResult(ActionEvent event) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("result.fxml"));
         Scene scene = new Scene(loader.load());
         ResultController rc = loader.getController();

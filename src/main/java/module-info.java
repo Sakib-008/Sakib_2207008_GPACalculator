@@ -14,4 +14,5 @@ module com.example.gpa_calculator {
 
     opens com.example.gpa_calculator to javafx.fxml;
     exports com.example.gpa_calculator;
+    exports com.example.gpa_calculator.model;
 }
