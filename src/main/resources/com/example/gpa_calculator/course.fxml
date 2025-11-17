@@ -97,6 +97,9 @@
 
             <Button fx:id="addCoursesBtn" onAction="#addCourse" styleClass="button" text="Add Course" />
             <Button fx:id="calculateBtn" disable="true" onAction="#showResult" styleClass="button" text="Calculate GPA" />
+            <Button fx:id="resetBtn" text="Reset All" styleClass="button" onAction="#resetAll"/>
+            <Button fx:id="exportBtn" text="Export to Text" styleClass="button" onAction="#exportToText"/>
+
 
         </HBox>
     </bottom>

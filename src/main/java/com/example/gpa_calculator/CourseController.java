@@ -12,12 +12,13 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 
+import java.io.FileWriter;
 import java.io.IOException;
 
 public class CourseController {
     public TextField courseName, courseCode, courseCredit, teacher1, teacher2;
     public ComboBox<String> grade;
-    public Button calculateBtn, addCoursesBtn, editCourseBtn, deleteCourseBtn;
+    public Button calculateBtn, addCoursesBtn, editCourseBtn, deleteCourseBtn , resetBtn, exportBtn;
     public TextField requiredCreditField;
     public TableView<Course> courseTable;
     public TableColumn<Course, String> colName, colCode, colGrade;
@@ -129,6 +130,50 @@ public class CourseController {
         totalCredits -= selected.getCredit();
         if (totalCredits < requiredCredits) calculateBtn.setDisable(true);
     }
+
+    public void resetAll() {
+        courseList.clear();
+        totalCredits = 0;
+        requiredCredits = -1;
+        calculateBtn.setDisable(true);
+        addCoursesBtn.setDisable(true);
+
+        courseName.clear();
+        courseCode.clear();
+        courseCredit.clear();
+        teacher1.clear();
+        teacher2.clear();
+        grade.setValue(null);
+        requiredCreditField.clear();
+    }
+
+
+    public void exportToText() {
+        if (courseList.isEmpty()) {
+            new Alert(Alert.AlertType.WARNING, "No courses to export!").show();
+            return;
+        }
+        try {
+            FileWriter writer = new FileWriter("GPA_Result.txt");
+            writer.write("GPA Calculator Results\n\n");
+            double totalPoints = 0;
+            double totalCreditsLocal = 0;
+            for (Course c : courseList) {
+                writer.write(String.format("Course: %s | Code: %s | Credit: %.2f | Grade: %s\n",
+                        c.getName(), c.getCode(), c.getCredit(), c.getGrade()));
+                totalPoints += c.getCredit() * c.getGradePoint();
+                totalCreditsLocal += c.getCredit();
+            }
+            double gpa = totalCreditsLocal == 0 ? 0 : totalPoints / totalCreditsLocal;
+            writer.write(String.format("\nTotal Credits: %.2f\nTotal Points: %.2f\nWeighted GPA: %.2f\n",
+                    totalCreditsLocal, totalPoints, gpa));
+            writer.close();
+            new Alert(Alert.AlertType.INFORMATION, "Exported to GPA_Result.txt").show();
+        } catch (IOException e) {
+            new Alert(Alert.AlertType.ERROR, "Error exporting file!").show();
+        }
+    }
+
 
     public void showResult(ActionEvent event) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("result.fxml"));
