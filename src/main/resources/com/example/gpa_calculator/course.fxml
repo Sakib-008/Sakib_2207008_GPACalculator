@@ -4,6 +4,8 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
@@ -50,12 +52,30 @@
             <Label text="Grade:" GridPane.columnIndex="0" GridPane.rowIndex="7" />
             <ComboBox fx:id="grade" GridPane.columnIndex="1" GridPane.rowIndex="7" />
 
+            <Label styleClass="gpa" text="Added Courses:" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="8" />
+            <TableView fx:id="courseTable" prefHeight="150" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="9">
+                <columns>
+                    <TableColumn fx:id="colName" prefWidth="120" text="Name" />
+                    <TableColumn fx:id="colCode" prefWidth="80" text="Code" />
+                    <TableColumn fx:id="colCredit" prefWidth="80" text="Credit" />
+                    <TableColumn fx:id="colGrade" prefWidth="80" text="Grade" />
+                </columns>
+            </TableView>
+
+            <HBox alignment="CENTER" spacing="10" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="10">
+                <Button fx:id="editCourseBtn" onAction="#editCourse" styleClass="button" text="Edit Selected" />
+                <Button fx:id="deleteCourseBtn" onAction="#deleteCourse" styleClass="button" text="Delete Selected" />
+            </HBox>
+
             <columnConstraints>
                 <ColumnConstraints />
                 <ColumnConstraints />
             </columnConstraints>
 
             <rowConstraints>
+                <RowConstraints />
+                <RowConstraints />
+                <RowConstraints />
                 <RowConstraints />
                 <RowConstraints />
                 <RowConstraints />
@@ -76,7 +96,6 @@
             </padding>
 
             <Button fx:id="addCoursesBtn" onAction="#addCourse" styleClass="button" text="Add Course" />
-
             <Button fx:id="calculateBtn" disable="true" onAction="#showResult" styleClass="button" text="Calculate GPA" />
 
         </HBox>
