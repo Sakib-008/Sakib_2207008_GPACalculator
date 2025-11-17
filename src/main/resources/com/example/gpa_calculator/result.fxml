@@ -7,6 +7,8 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
 
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.Button?>
 <BorderPane stylesheets="@style.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.gpa_calculator.ResultController">
 
     <top>
@@ -31,6 +33,10 @@
             <Label fx:id="totalCreditsLabel" styleClass="gpa" />
             <Label fx:id="totalPointsLabel" styleClass="gpa" />
             <Label fx:id="gpaLabel" styleClass="gpa" />
+
+            <HBox spacing="20" alignment="CENTER">
+                <Button fx:id="exportBtn" text="Export to Text" styleClass="button" onAction="#exportToText"/>
+            </HBox>
 
         </VBox>
     </center>

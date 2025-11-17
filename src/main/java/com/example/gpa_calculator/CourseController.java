@@ -147,27 +147,22 @@ public class CourseController {
         requiredCreditField.clear();
     }
 
-
     public void exportToText() {
         if (courseList.isEmpty()) {
             new Alert(Alert.AlertType.WARNING, "No courses to export!").show();
             return;
         }
-        try {
-            FileWriter writer = new FileWriter("GPA_Result.txt");
+        try (FileWriter writer = new FileWriter("GPA_Result.txt")) {
             writer.write("GPA Calculator Results\n\n");
             double totalPoints = 0;
             double totalCreditsLocal = 0;
             for (Course c : courseList) {
-                writer.write(String.format("Course: %s | Code: %s | Credit: %.2f | Grade: %s\n",
-                        c.getName(), c.getCode(), c.getCredit(), c.getGrade()));
+                writer.write(String.format("Course: %s | Code: %s | Credit: %.2f | Grade: %s\n", c.getName(), c.getCode(), c.getCredit(), c.getGrade()));
                 totalPoints += c.getCredit() * c.getGradePoint();
                 totalCreditsLocal += c.getCredit();
             }
             double gpa = totalCreditsLocal == 0 ? 0 : totalPoints / totalCreditsLocal;
-            writer.write(String.format("\nTotal Credits: %.2f\nTotal Points: %.2f\nWeighted GPA: %.2f\n",
-                    totalCreditsLocal, totalPoints, gpa));
-            writer.close();
+            writer.write(String.format("\nTotal Credits: %.2f\nTotal Points: %.2f\nWeighted GPA: %.2f\n", totalCreditsLocal, totalPoints, gpa));
             new Alert(Alert.AlertType.INFORMATION, "Exported to GPA_Result.txt").show();
         } catch (IOException e) {
             new Alert(Alert.AlertType.ERROR, "Error exporting file!").show();
