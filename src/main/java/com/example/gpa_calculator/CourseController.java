@@ -8,10 +8,8 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -19,9 +17,11 @@ import java.io.IOException;
 public class CourseController {
     public TextField courseName, courseCode, courseCredit, teacher1, teacher2;
     public ComboBox<String> grade;
-    public Button calculateBtn;
-    public Button addCoursesBtn;
+    public Button calculateBtn, addCoursesBtn, editCourseBtn, deleteCourseBtn;
     public TextField requiredCreditField;
+    public TableView<Course> courseTable;
+    public TableColumn<Course, String> colName, colCode, colGrade;
+    public TableColumn<Course, Double> colCredit;
 
     private ObservableList<Course> courseList = FXCollections.observableArrayList();
     private double totalCredits = 0;
@@ -34,6 +34,13 @@ public class CourseController {
 
         addCoursesBtn.setDisable(true);
         calculateBtn.setDisable(true);
+
+        colName.setCellValueFactory(new PropertyValueFactory<>("name"));
+        colCode.setCellValueFactory(new PropertyValueFactory<>("code"));
+        colCredit.setCellValueFactory(new PropertyValueFactory<>("credit"));
+        colGrade.setCellValueFactory(new PropertyValueFactory<>("grade"));
+
+        courseTable.setItems(courseList);
     }
 
     public void setRequiredCredits() {
@@ -92,6 +99,35 @@ public class CourseController {
             Alert alert = new Alert(Alert.AlertType.ERROR, "Invalid input!");
             alert.show();
         }
+    }
+
+    public void editCourse() {
+        Course selected = courseTable.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            new Alert(Alert.AlertType.WARNING, "No course selected!").show();
+            return;
+        }
+        courseName.setText(selected.getName());
+        courseCode.setText(selected.getCode());
+        courseCredit.setText(String.valueOf(selected.getCredit()));
+        teacher1.setText(selected.getTeacher1());
+        teacher2.setText(selected.getTeacher2());
+        grade.setValue(selected.getGrade());
+
+        courseList.remove(selected);
+        totalCredits -= selected.getCredit();
+        if (totalCredits < requiredCredits) calculateBtn.setDisable(true);
+    }
+
+    public void deleteCourse() {
+        Course selected = courseTable.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            new Alert(Alert.AlertType.WARNING, "No course selected!").show();
+            return;
+        }
+        courseList.remove(selected);
+        totalCredits -= selected.getCredit();
+        if (totalCredits < requiredCredits) calculateBtn.setDisable(true);
     }
 
     public void showResult(ActionEvent event) throws IOException {
