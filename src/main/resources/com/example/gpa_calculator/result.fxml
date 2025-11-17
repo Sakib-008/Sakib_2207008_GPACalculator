@@ -19,20 +19,19 @@
                 <Insets bottom="20" left="20" right="20" top="20" />
             </padding>
 
-            <children>
+            <TableView fx:id="courseTable">
+                <columns>
+                    <TableColumn fx:id="colName" prefWidth="120" text="Course Name" />
+                    <TableColumn fx:id="colCode" prefWidth="80" text="Code" />
+                    <TableColumn fx:id="colCredit" prefWidth="80" text="Credit" />
+                    <TableColumn fx:id="colGrade" prefWidth="80" text="Grade" />
+                </columns>
+            </TableView>
 
-                <TableView fx:id="courseTable">
-                    <columns>
-                        <TableColumn fx:id="colName" prefWidth="120" text="Course Name" />
-                        <TableColumn fx:id="colCode" prefWidth="80" text="Code" />
-                        <TableColumn fx:id="colCredit" prefWidth="80" text="Credit" />
-                        <TableColumn fx:id="colGrade" prefWidth="80" text="Grade" />
-                    </columns>
-                </TableView>
+            <Label fx:id="totalCreditsLabel" styleClass="gpa" />
+            <Label fx:id="totalPointsLabel" styleClass="gpa" />
+            <Label fx:id="gpaLabel" styleClass="gpa" />
 
-                <Label fx:id="gpaLabel" styleClass="gpa" />
-
-            </children>
         </VBox>
     </center>
 

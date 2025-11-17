@@ -16,6 +16,8 @@ public class ResultController {
     @FXML private TableColumn<Course, String> colName, colCode;
     @FXML private TableColumn<Course, Double> colCredit;
     @FXML private TableColumn<Course, String> colGrade;
+    @FXML private Label totalCreditsLabel;
+    @FXML private Label totalPointsLabel;
     @FXML private Label gpaLabel;
 
     public void setCourses(ObservableList<Course> courses) {
@@ -29,10 +31,14 @@ public class ResultController {
         double totalPoints = 0;
         double totalCredits = 0;
         for(Course c : courses) {
-            totalPoints += c.getCredit() * c.getGradePoint();
+            double points = c.getCredit() * c.getGradePoint();
+            totalPoints += points;
             totalCredits += c.getCredit();
         }
-        double gpa = totalPoints / totalCredits;
-        gpaLabel.setText(String.format("Your GPA: %.2f", gpa));
+        totalCreditsLabel.setText(String.format("Total Credits: %.2f", totalCredits));
+        totalPointsLabel.setText(String.format("Total Points: %.2f", totalPoints));
+
+        double gpa = totalCredits == 0 ? 0 : totalPoints / totalCredits;
+        gpaLabel.setText(String.format("Weighted GPA: %.2f", gpa));
     }
 }
