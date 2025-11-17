@@ -1,16 +1,27 @@
 package com.example.gpa_calculator;
 
 
+import com.example.gpa_calculator.model.Course;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 
 public class CourseController {
     public TextField courseName, courseCode, courseCredit, teacher1, teacher2;
     public ComboBox<String> grade;
-    public Button calculateBtn, addCouresBtn;
+    public Button calculateBtn, addCoureBtn;
+
+    private ObservableList<Course> courseList = FXCollections.observableArrayList();
+    private double totalCredits = 0;
+    private double requiredCredits = 15; // This needs to be made dynamic
 
     public void initialize(){
         grade.setItems(FXCollections.observableArrayList(
@@ -27,13 +38,38 @@ public class CourseController {
             String t2 = teacher2.getText();
             String g =  grade.getValue();
 
+            Course c = new Course(name, code, credits, t1, t2, g);
+            courseList.add(c);
+            totalCredits += credits;
+
+            Alert alert = new Alert(Alert.AlertType.INFORMATION, "Course added successfully!");
+            alert.show();
+
+            if(totalCredits >= requiredCredits) {
+                calculateBtn.setDisable(false);
+            }
+
+            courseName.clear();
+            courseCode.clear();
+            courseCredit.clear();
+            teacher1.clear();
+            teacher2.clear();
+            grade.setValue(null);
+
         }
         catch (Exception e){
-
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Invalid input!");
+            alert.show();
         }
     }
 
-    public void showResult(ActionEvent actionEvent) {
+    public void showResult(ActionEvent event) {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("result.fxml"));
+        Scene scene = new Scene(loader.load());
+        ResultController rc = loader.getController();
+        rc.setCourses(courseList);
 
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        stage.setScene(scene);
     }
 }
