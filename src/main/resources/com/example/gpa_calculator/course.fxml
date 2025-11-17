@@ -22,28 +22,33 @@
     </top>
 
     <center>
-        <GridPane hgap="10" vgap="10" BorderPane.alignment="CENTER">
+        <GridPane hgap="10" vgap="12" BorderPane.alignment="CENTER">
             <padding>
                 <Insets bottom="20" left="20" right="20" top="20" />
             </padding>
 
-            <Label text="Course Name:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-            <TextField fx:id="courseName" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+            <Label text="Required Credits:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+            <TextField fx:id="requiredCreditField" GridPane.columnIndex="1" GridPane.rowIndex="0" />
 
-            <Label text="Course Code:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-            <TextField fx:id="courseCode" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <Button onAction="#setRequiredCredits" styleClass="button" text="Set Required Credits" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 
-            <Label text="Course Credit:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
-            <TextField fx:id="courseCredit" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <Label text="Course Name:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+            <TextField fx:id="courseName" GridPane.columnIndex="1" GridPane.rowIndex="2" />
 
-            <Label text="Teacher 1:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
-            <TextField fx:id="teacher1" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <Label text="Course Code:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+            <TextField fx:id="courseCode" GridPane.columnIndex="1" GridPane.rowIndex="3" />
 
-            <Label text="Teacher 2:" GridPane.columnIndex="0" GridPane.rowIndex="4" />
-            <TextField fx:id="teacher2" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+            <Label text="Course Credit:" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+            <TextField fx:id="courseCredit" GridPane.columnIndex="1" GridPane.rowIndex="4" />
 
-            <Label text="Grade:" GridPane.columnIndex="0" GridPane.rowIndex="5" />
-            <ComboBox fx:id="grade" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+            <Label text="Teacher 1:" GridPane.columnIndex="0" GridPane.rowIndex="5" />
+            <TextField fx:id="teacher1" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+
+            <Label text="Teacher 2:" GridPane.columnIndex="0" GridPane.rowIndex="6" />
+            <TextField fx:id="teacher2" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+
+            <Label text="Grade:" GridPane.columnIndex="0" GridPane.rowIndex="7" />
+            <ComboBox fx:id="grade" GridPane.columnIndex="1" GridPane.rowIndex="7" />
 
             <columnConstraints>
                 <ColumnConstraints />
@@ -51,6 +56,8 @@
             </columnConstraints>
 
             <rowConstraints>
+                <RowConstraints />
+                <RowConstraints />
                 <RowConstraints />
                 <RowConstraints />
                 <RowConstraints />
@@ -71,6 +78,7 @@
             <Button fx:id="addCoursesBtn" onAction="#addCourse" styleClass="button" text="Add Course" />
 
             <Button fx:id="calculateBtn" disable="true" onAction="#showResult" styleClass="button" text="Calculate GPA" />
+
         </HBox>
     </bottom>
 

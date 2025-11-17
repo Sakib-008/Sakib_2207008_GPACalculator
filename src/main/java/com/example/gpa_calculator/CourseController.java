@@ -21,18 +21,46 @@ public class CourseController {
     public ComboBox<String> grade;
     public Button calculateBtn;
     public Button addCoursesBtn;
+    public TextField requiredCreditField;
 
     private ObservableList<Course> courseList = FXCollections.observableArrayList();
     private double totalCredits = 0;
-    private double requiredCredits = 15; // This needs to be made dynamic
+    private double requiredCredits = -1;
 
     public void initialize(){
         grade.setItems(FXCollections.observableArrayList(
                 "A+", "A", "A-", "B+", "B", "B-", "C+", "C",  "D", "F"
         ));
+
+        addCoursesBtn.setDisable(true);
+        calculateBtn.setDisable(true);
+    }
+
+    public void setRequiredCredits() {
+        try {
+            requiredCredits = Double.parseDouble(requiredCreditField.getText());
+
+            if (requiredCredits <= 0) {
+                throw new NumberFormatException();
+            }
+
+            addCoursesBtn.setDisable(false);
+
+            Alert alert = new Alert(Alert.AlertType.INFORMATION, "Required Credits set to: " + requiredCredits);
+            alert.show();
+
+        } catch (Exception e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Invalid credit value! Enter a positive number.");
+            alert.show();
+        }
     }
 
     public void addCourse(){
+        if (requiredCredits <= 0) {
+            Alert alert = new Alert(Alert.AlertType.WARNING, "Please set required credits first!");
+            alert.show();
+            return;
+        }
         try {
             String name = courseName.getText();
             String code = courseCode.getText();
