@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.gpa_calculator.ResultController">
+<BorderPane stylesheets="@style.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.gpa_calculator.ResultController">
 
     <top>
         <Label styleClass="header" text="GPA Result" BorderPane.alignment="CENTER" />
@@ -23,10 +23,10 @@
 
                 <TableView fx:id="courseTable">
                     <columns>
-                        <TableColumn fx:id="colName" prefWidth="89.59997940063477" text="Course Name" />
-                        <TableColumn fx:id="colCode" prefWidth="70.4000244140625" text="Code" />
-                        <TableColumn fx:id="colCredit" text="Credit" />
-                        <TableColumn fx:id="colGrade" text="Grade" />
+                        <TableColumn fx:id="colName" prefWidth="120" text="Course Name" />
+                        <TableColumn fx:id="colCode" prefWidth="80" text="Code" />
+                        <TableColumn fx:id="colCredit" prefWidth="80" text="Credit" />
+                        <TableColumn fx:id="colGrade" prefWidth="80" text="Grade" />
                     </columns>
                 </TableView>
 

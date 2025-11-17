@@ -19,7 +19,8 @@ import java.io.IOException;
 public class CourseController {
     public TextField courseName, courseCode, courseCredit, teacher1, teacher2;
     public ComboBox<String> grade;
-    public Button calculateBtn, addCoureBtn;
+    public Button calculateBtn;
+    public Button addCoursesBtn;
 
     private ObservableList<Course> courseList = FXCollections.observableArrayList();
     private double totalCredits = 0;

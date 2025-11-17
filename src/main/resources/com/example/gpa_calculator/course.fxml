@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<BorderPane xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.gpa_calculator.CourseController">
+<BorderPane stylesheets="@style.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.gpa_calculator.CourseController">
 
     <top>
         <Label styleClass="header" text="Enter Course Details">
@@ -44,18 +44,20 @@
 
             <Label text="Grade:" GridPane.columnIndex="0" GridPane.rowIndex="5" />
             <ComboBox fx:id="grade" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-         <columnConstraints>
-            <ColumnConstraints />
-            <ColumnConstraints />
-         </columnConstraints>
-         <rowConstraints>
-            <RowConstraints />
-            <RowConstraints />
-            <RowConstraints />
-            <RowConstraints />
-            <RowConstraints />
-            <RowConstraints />
-         </rowConstraints>
+
+            <columnConstraints>
+                <ColumnConstraints />
+                <ColumnConstraints />
+            </columnConstraints>
+
+            <rowConstraints>
+                <RowConstraints />
+                <RowConstraints />
+                <RowConstraints />
+                <RowConstraints />
+                <RowConstraints />
+                <RowConstraints />
+            </rowConstraints>
 
         </GridPane>
     </center>
@@ -66,8 +68,9 @@
                 <Insets bottom="20" left="20" right="20" top="20" />
             </padding>
 
-            <Button fx:id="addCouresBtn" onAction="#addCourse" text="Add Course" />
-            <Button fx:id="calculateBtn" disable="true" onAction="#showResult" text="Calculate GPA" />
+            <Button fx:id="addCoursesBtn" onAction="#addCourse" styleClass="button" text="Add Course" />
+
+            <Button fx:id="calculateBtn" disable="true" onAction="#showResult" styleClass="button" text="Calculate GPA" />
         </HBox>
     </bottom>
 
