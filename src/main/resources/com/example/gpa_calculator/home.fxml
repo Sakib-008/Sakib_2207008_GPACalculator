@@ -4,7 +4,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.BorderPane?>
 
-<BorderPane prefHeight="271.0" prefWidth="455.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.gpa_calculator.HomeController">
+<BorderPane prefHeight="500" stylesheets="@style.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.gpa_calculator.HomeController">
 
     <top>
         <Label styleClass="header" text="Welcome to the GPA Calculator" BorderPane.alignment="CENTER" />

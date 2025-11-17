@@ -1,44 +1,54 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.control.Button?>
-<BorderPane stylesheets="@style.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.gpa_calculator.ResultController">
+<BorderPane prefHeight="700" stylesheets="@style.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.gpa_calculator.ResultController">
 
     <top>
         <Label styleClass="header" text="GPA Result" BorderPane.alignment="CENTER" />
     </top>
 
     <center>
-        <VBox spacing="10">
-            <padding>
-                <Insets bottom="20" left="20" right="20" top="20" />
-            </padding>
+        <ScrollPane fitToHeight="true" fitToWidth="true">
+            <content>
+                <VBox spacing="10">
+                    <padding>
+                        <Insets bottom="20" left="20" right="20" top="20" />
+                    </padding>
 
-            <TableView fx:id="courseTable">
-                <columns>
-                    <TableColumn fx:id="colName" prefWidth="120" text="Course Name" />
-                    <TableColumn fx:id="colCode" prefWidth="80" text="Code" />
-                    <TableColumn fx:id="colCredit" prefWidth="80" text="Credit" />
-                    <TableColumn fx:id="colGrade" prefWidth="80" text="Grade" />
-                </columns>
-            </TableView>
+                    <Label styleClass="gpa" text="Added Courses:" />
+                    <Separator />
 
-            <Label fx:id="totalCreditsLabel" styleClass="gpa" />
-            <Label fx:id="totalPointsLabel" styleClass="gpa" />
-            <Label fx:id="gpaLabel" styleClass="gpa" />
+                    <TableView fx:id="courseTable" prefHeight="200">
+                        <columns>
+                            <TableColumn fx:id="colName" prefWidth="120" text="Course Name" />
+                            <TableColumn fx:id="colCode" prefWidth="80" text="Code" />
+                            <TableColumn fx:id="colCredit" prefWidth="80" text="Credit" />
+                            <TableColumn fx:id="colGrade" prefWidth="80" text="Grade" />
+                        </columns>
+                    </TableView>
 
-            <HBox spacing="20" alignment="CENTER">
-                <Button fx:id="exportBtn" text="Export to Text" styleClass="button" onAction="#exportToText"/>
-            </HBox>
+                    <Separator />
+                    <Label fx:id="totalCreditsLabel" styleClass="gpa" />
+                    <Label fx:id="totalPointsLabel" styleClass="gpa" />
+                    <Label fx:id="gpaLabel" styleClass="gpa" />
 
-        </VBox>
+                    <HBox alignment="CENTER" spacing="20">
+                        <Button fx:id="exportBtn" onAction="#exportToText" styleClass="button" text="Export to Text" />
+                    </HBox>
+
+                </VBox>
+            </content>
+        </ScrollPane>
     </center>
 
 </BorderPane>

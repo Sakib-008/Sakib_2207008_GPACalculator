@@ -69,6 +69,11 @@ public class CourseController {
             alert.show();
             return;
         }
+        if (grade.getValue() == null) {
+            Alert alert = new Alert(Alert.AlertType.WARNING, "Please select a grade!");
+            alert.show();
+            return;
+        }
         try {
             String name = courseName.getText();
             String code = courseCode.getText();
