@@ -19,4 +19,11 @@ A desktop application built with JavaFX to help students calculate their Grade P
 - Export course list and GPA to a text file.
 
 
+## Usability & Interactivity
+
+- Clear navigation between scenes.
+- Displays alerts or confirmation.
+- GPA calculation button is disabled until required credits are reached.
+- Uses Validation messages for missing or invalid course data.
+
 ---
