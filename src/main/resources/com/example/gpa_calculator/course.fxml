@@ -32,7 +32,7 @@
             </padding>
 
             <Label text="Required Credits:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-            <TextField fx:id="requiredCreditField" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+            <TextField fx:id="requiredCreditField"  GridPane.columnIndex="1" GridPane.rowIndex="0" />
             <Button onAction="#setRequiredCredits" styleClass="button" text="Set Required Credits" GridPane.columnIndex="1" GridPane.rowIndex="1" />
             <Separator GridPane.columnSpan="2" GridPane.rowIndex="2" />
 

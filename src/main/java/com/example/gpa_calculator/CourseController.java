@@ -24,7 +24,7 @@ public class CourseController {
     public TableColumn<Course, String> colName, colCode, colGrade;
     public TableColumn<Course, Double> colCredit;
 
-    private ObservableList<Course> courseList = FXCollections.observableArrayList();
+    private final ObservableList<Course> courseList = FXCollections.observableArrayList();
     private double totalCredits = 0;
     private double requiredCredits = -1;
 

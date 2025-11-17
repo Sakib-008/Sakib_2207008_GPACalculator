@@ -2,7 +2,6 @@ package com.example.gpa_calculator;
 
 import com.example.gpa_calculator.model.Course;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
