@@ -1,6 +1,5 @@
 package com.example.gpa_calculator;
 
-
 import com.example.gpa_calculator.model.Course;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
