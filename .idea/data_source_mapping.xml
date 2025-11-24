@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourcePerFileMappings">
-    <file url="mock:///DatabaseHelper.java" value="bab94a2f-a1b0-4158-84dc-0ccd019b29b5" />
-    <file url="mock:///DatabaseHelper.java" value="bab94a2f-a1b0-4158-84dc-0ccd019b29b5" />
-    <file url="file://$APPLICATION_CONFIG_DIR$/consoles/db/bab94a2f-a1b0-4158-84dc-0ccd019b29b5/console.sql" value="bab94a2f-a1b0-4158-84dc-0ccd019b29b5" />
-    <file url="file://$PROJECT_DIR$/src/main/java/com/example/gpa_calculator/DatabaseHelper.java" value="bab94a2f-a1b0-4158-84dc-0ccd019b29b5" />
+    <file url="file://$APPLICATION_CONFIG_DIR$/consoles/db/adf87783-16a6-4960-ba5b-bc72359cbef2/console.sql" value="adf87783-16a6-4960-ba5b-bc72359cbef2" />
   </component>
 </project>

@@ -2,6 +2,8 @@ package com.example.gpa_calculator;
 
 import com.example.gpa_calculator.model.Course;
 import javafx.application.Platform;
+import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -29,6 +31,7 @@ public class CourseController {
     private final ObservableList<Course> courseList = FXCollections.observableArrayList();
     private double totalCredits = 0;
     private double requiredCredits = -1;
+    private Course courseBeingEdited = null;
 
     public void initialize() {
         grade.setItems(FXCollections.observableArrayList(
@@ -38,10 +41,11 @@ public class CourseController {
         addCoursesBtn.setDisable(true);
         calculateBtn.setDisable(true);
 
-        colName.setCellValueFactory(new PropertyValueFactory<>("name"));
-        colCode.setCellValueFactory(new PropertyValueFactory<>("code"));
-        colCredit.setCellValueFactory(new PropertyValueFactory<>("credit"));
-        colGrade.setCellValueFactory(new PropertyValueFactory<>("grade"));
+        colName.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().name()));
+        colCode.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().code()));
+        colCredit.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue().credit()));
+        colGrade.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().grade()));
+
 
         courseTable.setItems(courseList);
 
@@ -52,9 +56,7 @@ public class CourseController {
                 Platform.runLater(() -> {
                     courseList.addAll(coursesFromDB);
                     totalCredits = coursesFromDB.stream().mapToDouble(Course::credit).sum();
-                    if (requiredCredits > 0 && totalCredits >= requiredCredits) {
-                        calculateBtn.setDisable(false);
-                    }
+                    checkCalculateButton();
                 });
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -66,12 +68,9 @@ public class CourseController {
     public void setRequiredCredits() {
         try {
             requiredCredits = Double.parseDouble(requiredCreditField.getText());
-
             if (requiredCredits <= 0) throw new NumberFormatException();
-
             addCoursesBtn.setDisable(false);
-            if (totalCredits >= requiredCredits) calculateBtn.setDisable(false);
-
+            checkCalculateButton();
             new Alert(Alert.AlertType.INFORMATION, "Required Credits set to: " + requiredCredits).show();
         } catch (Exception e) {
             new Alert(Alert.AlertType.ERROR, "Invalid credit value! Enter a positive number.").show();
@@ -97,26 +96,34 @@ public class CourseController {
             String g = grade.getValue();
 
             Course course = new Course(name, code, credits, t1, t2, g);
+
             AppExecutor.getExecutor().execute(() -> {
                 try {
-                    Course inserted = DatabaseHelper.insertCourse(course);
-                    Platform.runLater(() -> {
-                        courseList.add(inserted);
-                        totalCredits += inserted.credit();
-                        if (totalCredits >= requiredCredits) calculateBtn.setDisable(false);
-
-                        new Alert(Alert.AlertType.INFORMATION, "Course added successfully!").show();
-
-                        courseName.clear();
-                        courseCode.clear();
-                        courseCredit.clear();
-                        teacher1.clear();
-                        teacher2.clear();
-                        grade.setValue(null);
-                    });
+                    if (courseBeingEdited != null) {
+                        course.setId(courseBeingEdited.getId());
+                        DatabaseHelper.updateCourse(course);
+                        Platform.runLater(() -> {
+                            int index = courseList.indexOf(courseBeingEdited);
+                            if (index >= 0) courseList.set(index, course);
+                            totalCredits = totalCredits - courseBeingEdited.credit() + course.credit();
+                            courseBeingEdited = null;
+                            clearInputFields();
+                            checkCalculateButton();
+                            new Alert(Alert.AlertType.INFORMATION, "Course updated successfully!").show();
+                        });
+                    } else {
+                        Course inserted = DatabaseHelper.insertCourse(course);
+                        Platform.runLater(() -> {
+                            courseList.add(inserted);
+                            totalCredits += inserted.credit();
+                            clearInputFields();
+                            checkCalculateButton();
+                            new Alert(Alert.AlertType.INFORMATION, "Course added successfully!").show();
+                        });
+                    }
                 } catch (SQLException e) {
                     e.printStackTrace();
-                    Platform.runLater(() -> new Alert(Alert.AlertType.ERROR, "Failed to add course to database!").show());
+                    Platform.runLater(() -> new Alert(Alert.AlertType.ERROR, "Failed to save course in database!").show());
                 }
             });
         } catch (Exception e) {
@@ -136,19 +143,7 @@ public class CourseController {
         teacher1.setText(selected.teacher1());
         teacher2.setText(selected.teacher2());
         grade.setValue(selected.grade());
-
-        courseList.remove(selected);
-        totalCredits -= selected.credit();
-        if (totalCredits < requiredCredits) calculateBtn.setDisable(true);
-
-        AppExecutor.getExecutor().execute(() -> {
-            try {
-                DatabaseHelper.deleteCourse(selected.getId());
-            } catch (SQLException e) {
-                e.printStackTrace();
-                Platform.runLater(() -> new Alert(Alert.AlertType.ERROR, "Failed to delete course from database!").show());
-            }
-        });
+        courseBeingEdited = selected;
     }
 
     public void deleteCourse() {
@@ -157,10 +152,9 @@ public class CourseController {
             new Alert(Alert.AlertType.WARNING, "No course selected!").show();
             return;
         }
-
         courseList.remove(selected);
         totalCredits -= selected.credit();
-        if (totalCredits < requiredCredits) calculateBtn.setDisable(false);
+        checkCalculateButton();
 
         AppExecutor.getExecutor().execute(() -> {
             try {
@@ -178,13 +172,8 @@ public class CourseController {
         requiredCredits = -1;
         calculateBtn.setDisable(true);
         addCoursesBtn.setDisable(true);
-
-        courseName.clear();
-        courseCode.clear();
-        courseCredit.clear();
-        teacher1.clear();
-        teacher2.clear();
-        grade.setValue(null);
+        courseBeingEdited = null;
+        clearInputFields();
         requiredCreditField.clear();
 
         AppExecutor.getExecutor().execute(() -> {
@@ -226,8 +215,20 @@ public class CourseController {
         Scene scene = new Scene(loader.load());
         ResultController rc = loader.getController();
         rc.setCourses(courseList);
-
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         stage.setScene(scene);
+    }
+
+    private void clearInputFields() {
+        courseName.clear();
+        courseCode.clear();
+        courseCredit.clear();
+        teacher1.clear();
+        teacher2.clear();
+        grade.setValue(null);
+    }
+
+    private void checkCalculateButton() {
+        calculateBtn.setDisable(totalCredits < requiredCredits);
     }
 }
