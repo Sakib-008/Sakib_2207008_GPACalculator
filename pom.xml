@@ -24,6 +24,11 @@
       <artifactId>javafx-fxml</artifactId>
       <version>21.0.6</version>
     </dependency>
+      <dependency>
+          <groupId>org.xerial</groupId>
+          <artifactId>sqlite-jdbc</artifactId>
+          <version>3.45.1.0</version>
+      </dependency>
 <dependency>
       <groupId>org.openjfx</groupId>
       <artifactId>javafx-web</artifactId>
@@ -97,6 +102,7 @@
       <version>${junit.version}</version>
       <scope>test</scope>
     </dependency>
+
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-engine</artifactId>
