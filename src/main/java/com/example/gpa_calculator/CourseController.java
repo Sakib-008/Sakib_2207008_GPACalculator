@@ -1,6 +1,7 @@
 package com.example.gpa_calculator;
 
 import com.example.gpa_calculator.model.Course;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -13,11 +14,13 @@ import javafx.stage.Stage;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.sql.SQLException;
 
 public class CourseController {
+
     public TextField courseName, courseCode, courseCredit, teacher1, teacher2;
     public ComboBox<String> grade;
-    public Button calculateBtn, addCoursesBtn, editCourseBtn, deleteCourseBtn , resetBtn, exportBtn;
+    public Button calculateBtn, addCoursesBtn, editCourseBtn, deleteCourseBtn, resetBtn, exportBtn;
     public TextField requiredCreditField;
     public TableView<Course> courseTable;
     public TableColumn<Course, String> colName, colCode, colGrade;
@@ -27,9 +30,9 @@ public class CourseController {
     private double totalCredits = 0;
     private double requiredCredits = -1;
 
-    public void initialize(){
+    public void initialize() {
         grade.setItems(FXCollections.observableArrayList(
-                "A+", "A", "A-", "B+", "B", "B-", "C+", "C",  "D", "F"
+                "A+", "A", "A-", "B+", "B", "B-", "C+", "C", "D", "F"
         ));
 
         addCoursesBtn.setDisable(true);
@@ -41,68 +44,83 @@ public class CourseController {
         colGrade.setCellValueFactory(new PropertyValueFactory<>("grade"));
 
         courseTable.setItems(courseList);
+
+        AppExecutor.getExecutor().execute(() -> {
+            try {
+                DatabaseHelper.initDatabase();
+                var coursesFromDB = DatabaseHelper.getAllCourses();
+                Platform.runLater(() -> {
+                    courseList.addAll(coursesFromDB);
+                    totalCredits = coursesFromDB.stream().mapToDouble(Course::credit).sum();
+                    if (requiredCredits > 0 && totalCredits >= requiredCredits) {
+                        calculateBtn.setDisable(false);
+                    }
+                });
+            } catch (SQLException e) {
+                e.printStackTrace();
+                Platform.runLater(() -> new Alert(Alert.AlertType.ERROR, "Database initialization failed!").show());
+            }
+        });
     }
 
     public void setRequiredCredits() {
         try {
             requiredCredits = Double.parseDouble(requiredCreditField.getText());
 
-            if (requiredCredits <= 0) {
-                throw new NumberFormatException();
-            }
+            if (requiredCredits <= 0) throw new NumberFormatException();
 
             addCoursesBtn.setDisable(false);
+            if (totalCredits >= requiredCredits) calculateBtn.setDisable(false);
 
-            Alert alert = new Alert(Alert.AlertType.INFORMATION, "Required Credits set to: " + requiredCredits);
-            alert.show();
-
+            new Alert(Alert.AlertType.INFORMATION, "Required Credits set to: " + requiredCredits).show();
         } catch (Exception e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Invalid credit value! Enter a positive number.");
-            alert.show();
+            new Alert(Alert.AlertType.ERROR, "Invalid credit value! Enter a positive number.").show();
         }
     }
 
-    public void addCourse(){
+    public void addCourse() {
         if (requiredCredits <= 0) {
-            Alert alert = new Alert(Alert.AlertType.WARNING, "Please set required credits first!");
-            alert.show();
+            new Alert(Alert.AlertType.WARNING, "Please set required credits first!").show();
             return;
         }
         if (grade.getValue() == null) {
-            Alert alert = new Alert(Alert.AlertType.WARNING, "Please select a grade!");
-            alert.show();
+            new Alert(Alert.AlertType.WARNING, "Please select a grade!").show();
             return;
         }
+
         try {
             String name = courseName.getText();
             String code = courseCode.getText();
             double credits = Double.parseDouble(courseCredit.getText());
-            String t1 =  teacher1.getText();
+            String t1 = teacher1.getText();
             String t2 = teacher2.getText();
-            String g =  grade.getValue();
+            String g = grade.getValue();
 
-            Course c = new Course(name, code, credits, t1, t2, g);
-            courseList.add(c);
-            totalCredits += credits;
+            Course course = new Course(name, code, credits, t1, t2, g);
+            AppExecutor.getExecutor().execute(() -> {
+                try {
+                    Course inserted = DatabaseHelper.insertCourse(course);
+                    Platform.runLater(() -> {
+                        courseList.add(inserted);
+                        totalCredits += inserted.credit();
+                        if (totalCredits >= requiredCredits) calculateBtn.setDisable(false);
 
-            Alert alert = new Alert(Alert.AlertType.INFORMATION, "Course added successfully!");
-            alert.show();
+                        new Alert(Alert.AlertType.INFORMATION, "Course added successfully!").show();
 
-            if(totalCredits >= requiredCredits) {
-                calculateBtn.setDisable(false);
-            }
-
-            courseName.clear();
-            courseCode.clear();
-            courseCredit.clear();
-            teacher1.clear();
-            teacher2.clear();
-            grade.setValue(null);
-
-        }
-        catch (Exception e){
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Invalid input!");
-            alert.show();
+                        courseName.clear();
+                        courseCode.clear();
+                        courseCredit.clear();
+                        teacher1.clear();
+                        teacher2.clear();
+                        grade.setValue(null);
+                    });
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    Platform.runLater(() -> new Alert(Alert.AlertType.ERROR, "Failed to add course to database!").show());
+                }
+            });
+        } catch (Exception e) {
+            new Alert(Alert.AlertType.ERROR, "Invalid input!").show();
         }
     }
 
@@ -122,6 +140,15 @@ public class CourseController {
         courseList.remove(selected);
         totalCredits -= selected.credit();
         if (totalCredits < requiredCredits) calculateBtn.setDisable(true);
+
+        AppExecutor.getExecutor().execute(() -> {
+            try {
+                DatabaseHelper.deleteCourse(selected.getId());
+            } catch (SQLException e) {
+                e.printStackTrace();
+                Platform.runLater(() -> new Alert(Alert.AlertType.ERROR, "Failed to delete course from database!").show());
+            }
+        });
     }
 
     public void deleteCourse() {
@@ -130,9 +157,19 @@ public class CourseController {
             new Alert(Alert.AlertType.WARNING, "No course selected!").show();
             return;
         }
+
         courseList.remove(selected);
         totalCredits -= selected.credit();
-        if (totalCredits < requiredCredits) calculateBtn.setDisable(true);
+        if (totalCredits < requiredCredits) calculateBtn.setDisable(false);
+
+        AppExecutor.getExecutor().execute(() -> {
+            try {
+                DatabaseHelper.deleteCourse(selected.getId());
+            } catch (SQLException e) {
+                e.printStackTrace();
+                Platform.runLater(() -> new Alert(Alert.AlertType.ERROR, "Failed to delete course from database!").show());
+            }
+        });
     }
 
     public void resetAll() {
@@ -149,6 +186,15 @@ public class CourseController {
         teacher2.clear();
         grade.setValue(null);
         requiredCreditField.clear();
+
+        AppExecutor.getExecutor().execute(() -> {
+            try {
+                DatabaseHelper.clearAllCourses();
+            } catch (SQLException e) {
+                e.printStackTrace();
+                Platform.runLater(() -> new Alert(Alert.AlertType.ERROR, "Failed to clear database!").show());
+            }
+        });
     }
 
     public void exportToText() {
@@ -161,18 +207,19 @@ public class CourseController {
             double totalPoints = 0;
             double totalCreditsLocal = 0;
             for (Course c : courseList) {
-                writer.write(String.format("Course: %s | Code: %s | Credit: %.2f | Grade: %s\n", c.name(), c.code(), c.credit(), c.grade()));
+                writer.write(String.format("Course: %s | Code: %s | Credit: %.2f | Grade: %s\n",
+                        c.name(), c.code(), c.credit(), c.grade()));
                 totalPoints += c.credit() * c.getGradePoint();
                 totalCreditsLocal += c.credit();
             }
             double gpa = totalCreditsLocal == 0 ? 0 : totalPoints / totalCreditsLocal;
-            writer.write(String.format("\nTotal Credits: %.2f\nTotal Points: %.2f\nWeighted GPA: %.2f\n", totalCreditsLocal, totalPoints, gpa));
+            writer.write(String.format("\nTotal Credits: %.2f\nTotal Points: %.2f\nWeighted GPA: %.2f\n",
+                    totalCreditsLocal, totalPoints, gpa));
             new Alert(Alert.AlertType.INFORMATION, "Exported to GPA_Result.txt").show();
         } catch (IOException e) {
             new Alert(Alert.AlertType.ERROR, "Error exporting file!").show();
         }
     }
-
 
     public void showResult(ActionEvent event) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("result.fxml"));
