@@ -1,7 +1,5 @@
 package com.example.gpa_calculator;
-
 import com.example.gpa_calculator.model.Course;
-
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -69,6 +67,14 @@ public class DatabaseHelper {
             ps.executeUpdate();
         }
     }
+
+    public static void clearAllCourses() throws SQLException {
+        String sql = "DELETE FROM courses";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.executeUpdate();
+        }
+    }
+
 
     public static List<Course> getAllCourses() throws SQLException {
         List<Course> list = new ArrayList<>();
