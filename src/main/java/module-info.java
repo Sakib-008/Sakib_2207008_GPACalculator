@@ -13,6 +13,7 @@ module com.example.gpa_calculator {
     requires javafx.graphics;
     requires java.sql;
     requires org.json;
+    requires javafx.base;
 
     opens com.example.gpa_calculator to javafx.fxml;
     exports com.example.gpa_calculator;

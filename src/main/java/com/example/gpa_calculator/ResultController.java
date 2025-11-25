@@ -1,10 +1,11 @@
 package com.example.gpa_calculator;
 
 import com.example.gpa_calculator.model.Course;
+import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import org.json.JSONArray;
 
 import java.io.FileWriter;
@@ -24,10 +25,11 @@ public class ResultController {
     @FXML private Label gpaLabel;
 
     public void setCourses(ObservableList<Course> courses) {
-        colName.setCellValueFactory(new PropertyValueFactory<>("name"));
-        colCode.setCellValueFactory(new PropertyValueFactory<>("code"));
-        colCredit.setCellValueFactory(new PropertyValueFactory<>("credit"));
-        colGrade.setCellValueFactory(new PropertyValueFactory<>("grade"));
+        colName.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().name()));
+        colCode.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().code()));
+        colCredit.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue().credit()));
+        colGrade.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().grade()));
+
         courseTable.setItems(courses);
 
         double totalPoints = 0;
@@ -73,14 +75,36 @@ public class ResultController {
             new Alert(Alert.AlertType.WARNING, "No courses to export!").show();
             return;
         }
+
         try (FileWriter writer = new FileWriter("GPA_Result.json")) {
+
             JSONArray array = new JSONArray();
+
             for (Course c : courses) {
                 array.put(new org.json.JSONObject(JsonUtil.toJson(c)));
             }
-            writer.write(array.toString(4));
-            new Alert(Alert.AlertType.INFORMATION, "Courses exported to GPA_Result.json").show();
-        } catch (IOException e) {
+
+            double totalCredits = 0;
+            double totalPoints = 0;
+
+            for (Course c : courses) {
+                totalCredits += c.credit();
+                totalPoints += c.credit() * c.getGradePoint();
+            }
+
+            double gpa = totalCredits == 0 ? 0 : totalPoints / totalCredits;
+
+            org.json.JSONObject root = new org.json.JSONObject();
+            root.put("courses", array);
+            root.put("totalCredits", totalCredits);
+            root.put("totalPoints", totalPoints);
+            root.put("weightedGPA", gpa);
+
+            writer.write(root.toString(4));
+
+            new Alert(Alert.AlertType.INFORMATION, "Exported to GPA_Result.json").show();
+        }
+        catch (IOException e) {
             new Alert(Alert.AlertType.ERROR, "Failed to export JSON!").show();
         }
     }
@@ -88,17 +112,32 @@ public class ResultController {
     public void importFromJson() {
         try {
             String content = new String(Files.readAllBytes(Paths.get("GPA_Result.json")));
-            JSONArray array = new JSONArray(content);
+            org.json.JSONObject root = new org.json.JSONObject(content);
+
+            JSONArray array = root.getJSONArray("courses");
+
             ObservableList<Course> courses = courseTable.getItems();
             courses.clear();
+
             for (int i = 0; i < array.length(); i++) {
                 Course c = JsonUtil.extractCourse(array.getJSONObject(i).toString());
                 courses.add(c);
             }
-            setCourses(courses);
-            new Alert(Alert.AlertType.INFORMATION, "Courses imported successfully from JSON!").show();
+
+            double totalCredits = root.getDouble("totalCredits");
+            double totalPoints = root.getDouble("totalPoints");
+            double gpa = root.getDouble("weightedGPA");
+
+            totalCreditsLabel.setText(String.format("Total Credits: %.2f", totalCredits));
+            totalPointsLabel.setText(String.format("Total Points: %.2f", totalPoints));
+            gpaLabel.setText(String.format("Weighted GPA: %.2f", gpa));
+
+            new Alert(Alert.AlertType.INFORMATION, "Imported including GPA details!").show();
+
         } catch (Exception e) {
             new Alert(Alert.AlertType.ERROR, "Failed to import JSON!").show();
         }
     }
+
+
 }

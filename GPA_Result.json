@@ -1,0 +1,23 @@
+{
+    "courses": [
+        {
+            "code": "2",
+            "teacher2": "B",
+            "grade": "A+",
+            "name": "A",
+            "teacher1": "A",
+            "credit": 2
+        },
+        {
+            "code": "3",
+            "teacher2": "F",
+            "grade": "A+",
+            "name": "B",
+            "teacher1": "A",
+            "credit": 20
+        }
+    ],
+    "totalCredits": 22,
+    "totalPoints": 88,
+    "weightedGPA": 4
+}

@@ -11,7 +11,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 
 import java.io.FileWriter;
@@ -34,9 +33,7 @@ public class CourseController {
     private Course courseBeingEdited = null;
 
     public void initialize() {
-        grade.setItems(FXCollections.observableArrayList(
-                "A+", "A", "A-", "B+", "B", "B-", "C+", "C", "D", "F"
-        ));
+        grade.setItems(FXCollections.observableArrayList("A+", "A", "A-", "B+", "B", "B-", "C+", "C", "D", "F"));
 
         addCoursesBtn.setDisable(true);
         calculateBtn.setDisable(true);
@@ -45,7 +42,6 @@ public class CourseController {
         colCode.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().code()));
         colCredit.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue().credit()));
         colGrade.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().grade()));
-
 
         courseTable.setItems(courseList);
 
@@ -56,6 +52,12 @@ public class CourseController {
                 Platform.runLater(() -> {
                     courseList.addAll(coursesFromDB);
                     totalCredits = coursesFromDB.stream().mapToDouble(Course::credit).sum();
+
+                    if (courseList.isEmpty()) {
+                        requiredCredits = -1;
+                        addCoursesBtn.setDisable(true);
+                    }
+
                     checkCalculateButton();
                 });
             } catch (SQLException e) {
@@ -64,6 +66,7 @@ public class CourseController {
             }
         });
     }
+
 
     public void setRequiredCredits() {
         try {
@@ -229,6 +232,11 @@ public class CourseController {
     }
 
     private void checkCalculateButton() {
-        calculateBtn.setDisable(totalCredits < requiredCredits);
+        if (requiredCredits <= 0) {
+            calculateBtn.setDisable(true);
+        } else {
+            calculateBtn.setDisable(totalCredits < requiredCredits);
+        }
     }
+
 }
