@@ -132,7 +132,7 @@ public class ResultController {
             totalPointsLabel.setText(String.format("Total Points: %.2f", totalPoints));
             gpaLabel.setText(String.format("Weighted GPA: %.2f", gpa));
 
-            new Alert(Alert.AlertType.INFORMATION, "Imported including GPA details!").show();
+            new Alert(Alert.AlertType.INFORMATION, "Imported from JSON!").show();
 
         } catch (Exception e) {
             new Alert(Alert.AlertType.ERROR, "Failed to import JSON!").show();
